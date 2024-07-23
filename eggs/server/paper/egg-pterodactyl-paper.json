@@ -1,0 +1,99 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2024-07-23T16:35:24+02:00",
+    "name": "Paper",
+    "author": "Sytex@duck.com",
+    "description": "Paper is a Minecraft game server, designed to greatly improve performance, offer more advanced features & API.",
+    "features": [
+        "eula",
+        "java_version",
+        "pid_limit"
+    ],
+    "docker_images": {
+        "Java 21": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_21",
+        "Java 17": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_17",
+        "Java 11": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_11",
+        "Java 8": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_8"
+    },
+    "file_denylist": [],
+    "startup": "java -Dterminal.jline=false -Dterminal.ansi=true -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}} nogui",
+    "config": {
+        "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"query.port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \")! For help, type \"\r\n}",
+        "logs": "{}",
+        "stop": "stop"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/ash\r\n\r\nVER_EXISTS=`curl -s https:\/\/api.papermc.io\/v2\/projects\/paper | jq -r --arg VERSION $MINECRAFT_VERSION '.versions[] | contains($VERSION)' | grep -m1 true`\r\nLATEST_VERSION=`curl -s https:\/\/api.papermc.io\/v2\/projects\/paper | jq -r '.versions' | jq -r '.[-1]'`\r\n\r\nif [ \"${VER_EXISTS}\" == \"true\" ]; then\r\n\techo -e \"Version is valid. Using version ${MINECRAFT_VERSION}\"\r\nelse\r\n\techo -e \"Specified version not found. Defaulting to the latest paper version\"\r\n\tMINECRAFT_VERSION=${LATEST_VERSION}\r\nfi\r\n\r\nBUILD_EXISTS=`curl -s https:\/\/api.papermc.io\/v2\/projects\/paper\/versions\/${MINECRAFT_VERSION} | jq -r --arg BUILD ${BUILD_NUMBER} '.builds[] | tostring | contains($BUILD)' | grep -m1 true`\r\nLATEST_BUILD=`curl -s https:\/\/api.papermc.io\/v2\/projects\/paper\/versions\/${MINECRAFT_VERSION} | jq -r '.builds' | jq -r '.[-1]'`\r\n\r\nif [ \"${BUILD_EXISTS}\" == \"true\" ]; then\r\n\techo -e \"Build is valid for version ${MINECRAFT_VERSION}. Using build ${BUILD_NUMBER}\"\r\nelse\r\n\techo -e \"Using the latest paper build for version ${MINECRAFT_VERSION}\"\r\n\tBUILD_NUMBER=${LATEST_BUILD}\r\nfi\r\n\r\nJAR_NAME=paper-${MINECRAFT_VERSION}-${BUILD_NUMBER}.jar\r\n\r\necho \"Version being downloaded\"\r\necho -e \"MC Version: ${MINECRAFT_VERSION}\"\r\necho -e \"Build: ${BUILD_NUMBER}\"\r\necho -e \"JAR Name of Build: ${JAR_NAME}\"\r\nDOWNLOAD_URL=https:\/\/api.papermc.io\/v2\/projects\/paper\/versions\/${MINECRAFT_VERSION}\/builds\/${BUILD_NUMBER}\/downloads\/${JAR_NAME}\r\n\r\ncd \/mnt\/server\r\n\r\necho -e \"Running curl -o ${SERVER_JARFILE} ${DOWNLOAD_URL}\"\r\n\r\nif [ -f ${SERVER_JARFILE} ]; then\r\n\tmv ${SERVER_JARFILE} ${SERVER_JARFILE}.old\r\nfi\r\n\r\ncurl -o ${SERVER_JARFILE} ${DOWNLOAD_URL}\r\n\r\n# Downloading Pterodactyl's server-icon.png\r\n\r\nif [ -f server-icon.png ]; then \r\n     mv server-icon.png server-icon.png.old\r\nfi\r\n\r\ncurl -o server-icon.png https:\/\/raw.githubusercontent.com\/SytexMC\/configuration-files\/main\/1.19.4\/server-icon.png\r\n\r\nif [ ${OPTIMIZED_CONFIGS} == \"enabled\" ];then\r\n    \r\n    # Downloading Mojang's server.properties\r\n\r\n    if [ -f server.properties ]; then \r\n        mv server.properties server.properties.old\r\n    fi\r\n\r\n    curl -o server.properties https:\/\/raw.githubusercontent.com\/SytexMC\/configuration-files\/main\/1.19.4\/server.properties\r\n\r\n    # Downloading Bukkit's bukkit.yml\r\n\r\n    if [ -f bukkit.yml ]; then \r\n        mv bukkit.yml bukkit.yml.old\r\n    fi\r\n\r\n    curl -o bukkit.yml https:\/\/raw.githubusercontent.com\/SytexMC\/configuration-files\/main\/1.19.4\/bukkit.yml\r\n\r\n    # Downloading Spigot's spigot.yml\r\n\r\n    if [ -f spigot.yml ]; then \r\n        mv spigot.yml spigot.yml.old\r\n    fi\r\n\r\n    curl -o spigot.yml https:\/\/raw.githubusercontent.com\/SytexMC\/configuration-files\/main\/1.19.4\/spigot.yml\r\n\r\n    # Downloading Paper's paper-global.yml\r\n\r\n    if [ -f config\/paper-global.yml ]; then \r\n        mv config\/paper-global.yml config\/paper-global.yml.old\r\n    fi\r\n\r\n    curl --create-dirs -o config\/paper-global.yml https:\/\/raw.githubusercontent.com\/SytexMC\/configuration-files\/main\/1.19.4\/config\/paper-global.yml \r\n\r\n    # Downloading Paper's paper-world-defaults.yml\r\n\r\n    if [ -f config\/paper-world-defaults.yml ]; then \r\n        mv config\/paper-world-defaults.yml config\/paper-world-defaults.yml.old\r\n    fi\r\n \r\n    curl --create-dirs -o config\/paper-world-defaults.yml https:\/\/raw.githubusercontent.com\/SytexMC\/configuration-files\/main\/1.19.4\/config\/paper-world-defaults.yml  \r\nfi",
+            "container": "ghcr.io\/pterodactyl\/installers:alpine",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Minecraft Version",
+            "description": "Select the Minecraft version you wish to install. To stay up-to-date, keep the setting on 'latest'. If you select an invalid version, it will automatically switch to the latest version.",
+            "env_variable": "MINECRAFT_VERSION",
+            "default_value": "latest",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Build Number",
+            "description": "Build number for the Paper release. Set to 'latest' to ensure you always receive the most up-to-date version. Please note that any invalid versions will automatically default to the latest build.",
+            "env_variable": "BUILD_NUMBER",
+            "default_value": "latest",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Server Jar File",
+            "description": "The name of the server JAR file used to run or during re\/installation of the server.",
+            "env_variable": "SERVER_JARFILE",
+            "default_value": "server.jar",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:32|regex:\/^([\\w\\d._-]+)(\\.jar)$\/",
+            "field_type": "text"
+        },
+        {
+            "name": "Automatic Updating",
+            "description": "If enabled, the server will automatically update to the latest build of the current version. Make sure the server jar file is named 'server.jar' & do not use this with modded versions.",
+            "env_variable": "AUTOMATIC_UPDATING",
+            "default_value": "enabled",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|in:enabled,disabled",
+            "field_type": "text"
+        },
+        {
+            "name": "JVM Startup Flags",
+            "description": "Select either Velocity or Aikar's startup flags to run your server. If you choose 'None', the server will use the default flags listed above.",
+            "env_variable": "STARTUP_FLAGS",
+            "default_value": "Aikar's Flags",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|in:Aikar's Flags,Velocity Flags,None",
+            "field_type": "text"
+        },
+        {
+            "name": "Optimized Configs",
+            "description": "If enabled, the server will automatically download optimized configurations during re\/installation.",
+            "env_variable": "OPTIMIZED_CONFIGS",
+            "default_value": "enabled",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|in:enabled,disabled",
+            "field_type": "text"
+        }
+    ]
+}
