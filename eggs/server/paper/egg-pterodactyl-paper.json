@@ -4,18 +4,22 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2024-07-25T11:36:56+02:00",
+    "exported_at": "2024-07-25T12:57:44+02:00",
     "name": "Paper",
     "author": "Sytex@duck.com",
-    "description": "Paper is a high performance fork of Spigot that aims to fix gameplay and mechanic inconsistencies as well as to improve performance. Paper contains numerous features, bug fixes, exploit preventions and major performance improvements not found in Spigot.",
+    "description": "Paper is a Minecraft game server, designed to greatly improve performance, offer more advanced features & API.",
     "features": [
         "eula",
         "java_version",
         "pid_limit"
     ],
     "docker_images": {
+        "Java 22": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_22",
         "Java 21": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_21",
+        "Java 19": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_19",
+        "Java 18": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_18",
         "Java 17": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_17",
+        "Java 16": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_16",
         "Java 11": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_11",
         "Java 8": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_8"
     },
