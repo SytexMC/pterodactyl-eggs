@@ -4,10 +4,10 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2024-07-23T16:35:24+02:00",
+    "exported_at": "2024-07-25T11:36:56+02:00",
     "name": "Paper",
     "author": "Sytex@duck.com",
-    "description": "Paper is a Minecraft game server, designed to greatly improve performance, offer more advanced features & API.",
+    "description": "Paper is a high performance fork of Spigot that aims to fix gameplay and mechanic inconsistencies as well as to improve performance. Paper contains numerous features, bug fixes, exploit preventions and major performance improvements not found in Spigot.",
     "features": [
         "eula",
         "java_version",
@@ -20,7 +20,7 @@
         "Java 8": "ghcr.io\/sytexmc\/pterodactyl-yolks:java_8"
     },
     "file_denylist": [],
-    "startup": "java -Dterminal.jline=false -Dterminal.ansi=true -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}} nogui",
+    "startup": "{{STARTUP_FLAGS}}",
     "config": {
         "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"query.port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
         "startup": "{\r\n    \"done\": \")! For help, type \"\r\n}",
@@ -77,12 +77,12 @@
         },
         {
             "name": "JVM Startup Flags",
-            "description": "Select either Velocity or Aikar's startup flags to run your server. If you choose 'None', the server will use the default flags listed above.",
+            "description": "This allows you to fully customize your JVM startup flags, with Aikar's flags set as the default option.",
             "env_variable": "STARTUP_FLAGS",
-            "default_value": "Aikar's Flags",
+            "default_value": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -XX:+AlwaysPreTouch -XX:+DisableExplicitGC -XX:+ParallelRefProcEnabled -XX:+PerfDisableSharedMem -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1HeapRegionSize=8M -XX:G1HeapWastePercent=5 -XX:G1MaxNewSizePercent=40 -XX:G1MixedGCCountTarget=4 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1NewSizePercent=30 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:G1ReservePercent=20 -XX:InitiatingHeapOccupancyPercent=15 -XX:MaxGCPauseMillis=200 -XX:MaxTenuringThreshold=1 -XX:SurvivorRatio=32 -Dusing.aikars.flags=https:\/\/mcflags.emc.gs -Daikars.new.flags=true -jar {{SERVER_JARFILE}} nogui",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|in:Aikar's Flags,Velocity Flags,None",
+            "rules": "required|string",
             "field_type": "text"
         },
         {
